@@ -6,10 +6,11 @@ import {
   updateUserController,
 } from "../controllers/users.controllers";
 import ensureTokenIsValidMiddleware from "../middlewares/login/ensureTokenIsValid.middleware";
-import ensureDataIsValidMiddleWare from "../middlewares/user/ensureDataIsValid.middlewares";
+import ensureDataIsValidMiddleWare from "../middlewares/ensureDataIsValid.middlewares";
 import ensureEmailIsUniqueMiddleware from "../middlewares/user/ensureEmailIsUnique.middleware";
 import ensureUserExistsMiddleWare from "../middlewares/user/ensureUserExists.middleware";
 import { createUserSchema } from "../schemas/users.schemas";
+import ensureUserIsAdminMiddleware from "../middlewares/ensureUserIsAdmin.middleware";
 
 const userRoutes: Router = Router();
 
@@ -19,7 +20,12 @@ userRoutes.post(
   ensureEmailIsUniqueMiddleware,
   createUserController
 );
-userRoutes.get("", ensureTokenIsValidMiddleware, readAllUsersController);
+userRoutes.get(
+  "",
+  ensureTokenIsValidMiddleware,
+  ensureUserIsAdminMiddleware,
+  readAllUsersController
+);
 userRoutes.patch(
   "/:id",
   ensureTokenIsValidMiddleware,
@@ -31,6 +37,7 @@ userRoutes.delete(
   "/:id",
   ensureTokenIsValidMiddleware,
   ensureUserExistsMiddleWare,
+  ensureUserIsAdminMiddleware,
   deleteUserController
 );
 

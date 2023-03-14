@@ -5,13 +5,17 @@ import {
   createUserSchemaReturn,
   userUpdateSchema,
 } from "../../schemas/users.schemas";
-import { IUserReturn, IUserUpdate } from "../../interfaces/users.interfaces";
+import {
+  IUserInfo,
+  IUserReturn,
+  IUserUpdate,
+} from "../../interfaces/users.interfaces";
 import { AppError } from "../../errors";
 
 const updateUserService = async (
   userData: IUserUpdate,
   userId: number,
-  userInfo: any
+  userInfo: IUserInfo
 ): Promise<IUserReturn> => {
   const userRepository: Repository<User> = AppDataSource.getRepository(User);
 

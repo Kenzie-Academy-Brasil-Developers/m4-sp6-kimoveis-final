@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { AppError } from "../errors";
 import { IScheduleRequest } from "../interfaces/schedules.interfaces";
 import createScheduleService from "../services/schedules/createSchedule.service";
 import { readScheduleService } from "../services/schedules/readSchedule.service";
@@ -16,9 +15,6 @@ const readScheduleController = async (
   req: Request,
   resp: Response
 ): Promise<Response> => {
-  if (!req.user.admin) {
-    throw new AppError("Insufficient permission", 403);
-  }
   const id = Number(req.params.id);
 
   const scheduleRealEstate = await readScheduleService(id);

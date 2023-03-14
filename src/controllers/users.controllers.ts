@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { AppError } from "../errors";
 import { IUserRequest, IUserUpdate } from "../interfaces/users.interfaces";
 import createUserService from "../services/users/createUser.service";
 import deleteUserService from "../services/users/deleteUser.service";
@@ -15,9 +14,6 @@ const createUserController = async (req: Request, res: Response) => {
 };
 
 const readAllUsersController = async (req: Request, res: Response) => {
-  if (req.user.admin === false) {
-    throw new AppError("Insufficient permission", 403);
-  }
   const allUsers = await readAllUsersService();
 
   res.json(allUsers);
@@ -33,9 +29,6 @@ const updateUserController = async (req: Request, res: Response) => {
 };
 
 const deleteUserController = async (req: Request, res: Response) => {
-  if (req.user.admin === false) {
-    throw new AppError("Insufficient permission", 403);
-  }
   const userId = parseInt(req.params.id);
 
   await deleteUserService(userId);

@@ -1,11 +1,9 @@
 import { Repository } from "typeorm";
 import { AppDataSource } from "../../data-source";
-import { RealEstate, Schedule } from "../../entities";
+import { RealEstate } from "../../entities";
 import { AppError } from "../../errors";
 
 const readScheduleService = async (idRealEstate: number): Promise<any> => {
-  const scheduleRepository: Repository<Schedule> =
-    AppDataSource.getRepository(Schedule);
   const realEstateRepository: Repository<RealEstate> =
     AppDataSource.getRepository(RealEstate);
 

@@ -3,11 +3,12 @@ import { RealEstate, Schedule, User } from "../../entities";
 import { Repository } from "typeorm";
 import { IScheduleRequest } from "../../interfaces/schedules.interfaces";
 import { AppError } from "../../errors";
+import { IUserInfo } from "../../interfaces/users.interfaces";
 
 const createScheduleService = async (
   scheduleData: IScheduleRequest,
-  userData: any
-): Promise<any> => {
+  userData: IUserInfo
+): Promise<object> => {
   const scheduleRepository: Repository<Schedule> =
     AppDataSource.getRepository(Schedule);
 
@@ -56,16 +57,18 @@ const createScheduleService = async (
     );
   }
 
-  const data = new Date(scheduleData.date);
-  const day = data.getDay();
+  const workDays = [1, 2, 3, 4, 5];
+  const minHour = 8;
+  const maxHour = 18;
 
-  if (day === 0 || day === 6) {
+  const scheduledDate = new Date(scheduleData.date);
+  const hour = Number(scheduleData.hour.split(":")[0]);
+
+  if (!workDays.includes(scheduledDate.getDay())) {
     throw new AppError("Invalid date, work days are monday to friday", 400);
   }
 
-  const hour = Number(scheduleData.hour.split(":")[0]);
-
-  if (hour <= 7 || hour >= 18) {
+  if (hour < minHour || hour >= maxHour) {
     throw new AppError("Invalid hour, available times are 8AM to 18PM", 400);
   }
 
@@ -86,19 +89,6 @@ const createScheduleService = async (
   const response = { message: "Schedule created" };
 
   return response;
-
-  // const schedule: any = scheduleRepository.create({
-  //   ...scheduleData,
-  //   date: date,
-  //   RealEstate: realEstate!,
-  //   user: user!,
-  // });
-
-  // await scheduleRepository.save(schedule);
-
-  // const newSchedule = createScheduleSchemaReturn.parse(schedule);
-
-  // return newSchedule;
 };
 
 export default createScheduleService;

@@ -17,8 +17,6 @@ const dataSourceConfig = (): DataSourceOptions => {
   }
 
   const nodeEnv: string | undefined = process.env.NODE_ENV;
-
-  console.log(nodeEnv, "------------NODEENV");
   if (nodeEnv === "test") {
     return {
       type: "sqlite",

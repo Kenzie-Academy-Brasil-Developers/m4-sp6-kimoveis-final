@@ -1,6 +1,10 @@
 import { z } from "zod";
-import { createScheduleSchema } from "../schemas/shcedule.schema";
+import {
+  createScheduleSchema,
+  createScheduleSchemaReturn,
+} from "../schemas/shcedule.schema";
 
 type IScheduleRequest = z.infer<typeof createScheduleSchema>;
+type IScheduleReturn = z.infer<typeof createScheduleSchemaReturn>;
 
-export { IScheduleRequest };
+export { IScheduleRequest, IScheduleReturn };
