@@ -4,7 +4,7 @@ declare global {
     interface Request {
       user: {
         id: number;
-        admin: string;
+        admin: boolean;
       };
     }
   }

@@ -20,7 +20,8 @@ const ensureEmailIsUniqueMiddleware = async (
       email: req.body.email,
     },
   });
-  if (findUser && req.body.email) {
+
+  if (findUser) {
     throw new AppError("Email already exists", 409);
   }
 

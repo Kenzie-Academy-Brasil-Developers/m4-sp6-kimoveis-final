@@ -21,27 +21,27 @@ class RealEstate {
   @Column({ type: "boolean", nullable: true, default: false })
   sold?: boolean;
 
-  @Column({ type: "decimal", precision: 12, scale: 2 })
+  @Column({ type: "decimal", precision: 12, scale: 2, default: 0 })
   value: number | string;
 
   @Column()
   size: number;
 
-  @CreateDateColumn({ type: "timestamp" })
-  createdAt: Date;
+  @CreateDateColumn({ type: "date" })
+  createdAt: string;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: "date" })
   updatedAt: string;
 
   @OneToOne(() => Address)
   @JoinColumn()
-  address: Address | null | undefined;
+  address: Address;
 
-  @OneToMany(() => Schedule, (schedule) => schedule.RealEstate)
-  schedule: Schedule[];
+  @OneToMany(() => Schedule, (schedules) => schedules.realEstate)
+  schedules: Schedule[];
 
-  @ManyToOne(() => Category, (Category) => Category.RealEstate)
-  Category: Category[];
+  @ManyToOne(() => Category, (category) => category.realEstate)
+  category: Category;
 }
 
 export { RealEstate };

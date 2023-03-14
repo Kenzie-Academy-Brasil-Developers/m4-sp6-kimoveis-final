@@ -5,9 +5,10 @@ import {
   IRealStateRequest,
   IRealStateReturn,
 } from "../../interfaces/realState.interfaces";
-import { createRealStateSchemaReturn } from "../../schemas/realState.schema";
+import { returnRealEstateSchema } from "../../schemas/realState.schema";
+import { AppError } from "../../errors";
 
-const createUserService = async (
+const createRealEstateService = async (
   realStateData: IRealStateRequest
 ): Promise<IRealStateReturn> => {
   const realStateRepository: Repository<RealEstate> =
@@ -19,23 +20,42 @@ const createUserService = async (
   const categoriesRepository: Repository<Category> =
     AppDataSource.getRepository(Category);
 
-  const newaddress = addressRepository.create({ ...realStateData.address });
+  const { categoryId, address, size, value } = realStateData;
+
+  const addressExists = await addressRepository
+    .createQueryBuilder("address")
+    .select(["address"])
+    .where("address.street = :street", { street: address.street })
+    .andWhere("address.zipCode = :zipCode", { zipCode: address.zipCode })
+    .getOne();
+
+  if (addressExists) {
+    throw new AppError("Address already exists", 409);
+  }
+
+  const newaddress = addressRepository.create(address);
   await addressRepository.save(newaddress);
 
-  // const category = await categoriesRepository.findOneBy({
-  //   id: realStateData.categoryId,
-  // });
+  const category = await categoriesRepository.findOneBy({
+    id: categoryId,
+  });
+  if (!category) {
+    throw new AppError("category not found", 404);
+  }
 
   const realState = realStateRepository.create({
-    ...realStateData,
+    value,
+    size,
+    category: category,
     address: newaddress,
   });
 
   await realStateRepository.save(realState);
 
-  const newRealState = createRealStateSchemaReturn.parse(realState);
+  const newRealState: IRealStateReturn =
+    returnRealEstateSchema.parse(realState);
 
   return newRealState;
 };
 
-export default createUserService;
+export default createRealEstateService;

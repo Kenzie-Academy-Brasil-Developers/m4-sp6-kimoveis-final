@@ -1,35 +1,53 @@
 import { z } from "zod";
+import { createCategorySchemaReturn } from "./categories.schema";
 
-//todo
-
-//ver como ta SOLD da coluna --- entender
-//veririficar duplicidade do endereço
-//rota so pode ser acessada por adm
 const addressSchema = z.object({
-  street: z.string(),
+  street: z.string().min(3).max(45),
   zipCode: z.string().max(8),
-  number: z.string().optional().nullable(),
-  city: z.string(),
+  number: z.string().max(7).nullable().optional(),
+  city: z.string().max(20),
   state: z.string().max(2),
 });
 
-const createRealStateSchema = z.object({
-  value: z.number().transform((val) => parseFloat(val.toFixed(2))),
-  size: z.number().int(),
+const realEstateSchema = z.object({
+  value: z.string().or(z.number()),
+  size: z.number().positive(),
   address: addressSchema,
-  // categoryId: z.number(),
+  categoryId: z.number(),
+});
+const returnAddressSchema = addressSchema.extend({
+  id: z.number().int(),
 });
 
-const createRealStateSchemaReturn = createRealStateSchema.extend({
-  id: z.number(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
+const arrayAddressesSchema = returnAddressSchema.array();
 
-const allRealStatesSchema = z.array(createRealStateSchemaReturn);
+const returnRealEstateSchema = realEstateSchema
+  .omit({ categoryId: true })
+  .extend({
+    id: z.number(),
+    sold: z.boolean(),
+    address: returnAddressSchema,
+    category: createCategorySchemaReturn,
+    createdAt: z.string(),
+    updatedAt: z.string(),
+  });
+
+const arrayRealEstatesSchema = returnRealEstateSchema.array();
+
+const manyRealEstateSchemaWithoutCategory = realEstateSchema
+  .omit({
+    categoryId: true,
+  })
+  .array();
+
+const returnRealEstatesByCategorySchema = returnRealEstateSchema.extend({
+  realEstates: manyRealEstateSchemaWithoutCategory,
+});
 
 export {
-  createRealStateSchema,
-  createRealStateSchemaReturn,
-  allRealStatesSchema,
+  realEstateSchema,
+  returnRealEstateSchema,
+  arrayRealEstatesSchema,
+  returnRealEstatesByCategorySchema,
+  manyRealEstateSchemaWithoutCategory,
 };

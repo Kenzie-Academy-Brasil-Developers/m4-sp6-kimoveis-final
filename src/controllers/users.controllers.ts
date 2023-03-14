@@ -15,12 +15,10 @@ const createUserController = async (req: Request, res: Response) => {
 };
 
 const readAllUsersController = async (req: Request, res: Response) => {
-  const allUsers = await readAllUsersService();
-
-  console.log(req.user.admin);
-  if (req.user.admin === "false") {
-    throw new AppError("only admins can read all the users", 403);
+  if (req.user.admin === false) {
+    throw new AppError("Insufficient permission", 403);
   }
+  const allUsers = await readAllUsersService();
 
   res.json(allUsers);
 };
@@ -29,12 +27,15 @@ const updateUserController = async (req: Request, res: Response) => {
   const userData: IUserUpdate = req.body;
   const userId = parseInt(req.params.id);
 
-  const allUsers = await updateUserService(userData, userId);
+  const allUsers = await updateUserService(userData, userId, req.user);
 
   res.json(allUsers);
 };
 
 const deleteUserController = async (req: Request, res: Response) => {
+  if (req.user.admin === false) {
+    throw new AppError("Insufficient permission", 403);
+  }
   const userId = parseInt(req.params.id);
 
   await deleteUserService(userId);

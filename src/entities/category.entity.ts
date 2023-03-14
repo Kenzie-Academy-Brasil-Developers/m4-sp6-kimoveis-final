@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { RealEstate } from "./realEstate.entity";
 
 @Entity("categories")
@@ -9,8 +15,8 @@ class Category {
   @Column({ length: 45, unique: true })
   name: string;
 
-  @ManyToOne(() => RealEstate, (RealEstate) => RealEstate.Category)
-  RealEstate: RealEstate;
+  @OneToMany(() => RealEstate, (realEstate) => realEstate.category)
+  realEstate: RealEstate;
 }
 
 export { Category };

@@ -1,4 +1,7 @@
+import { getRounds, hashSync } from "bcryptjs";
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -20,24 +23,32 @@ class User {
   @Column({ length: 45, unique: true })
   email: string;
 
-  @Column({ type: "boolean", nullable: true, default: false })
-  admin?: boolean | undefined | null;
+  @Column({ type: "boolean", default: false })
+  admin: boolean;
 
   @Column({ length: 120 })
   password: string;
 
-  @CreateDateColumn({ type: "timestamp" })
-  createdAt: Date;
+  @CreateDateColumn({ type: "date" })
+  createdAt: string;
 
-  @UpdateDateColumn({ type: "timestamp" })
-  updatedAt: Date;
+  @UpdateDateColumn({ type: "date" })
+  updatedAt: string;
 
-  @DeleteDateColumn({ type: "timestamp", nullable: true })
-  deletedAt?: string | Date | null | undefined;
+  @DeleteDateColumn({ type: "date" })
+  deletedAt: string;
 
-  @OneToMany(() => Schedule, (schedule) => schedule.user)
-  schedule: Schedule[];
-  static deletedAt: Date;
+  @OneToMany(() => Schedule, (schedules) => schedules.user)
+  schedules: Schedule[];
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  hashPassword() {
+    const isEncrypted = getRounds(this.password);
+    if (!isEncrypted) {
+      this.password = hashSync(this.password, 8);
+    }
+  }
 }
 
 export { User };

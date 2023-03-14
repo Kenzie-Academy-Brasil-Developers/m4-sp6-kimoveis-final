@@ -1,13 +1,13 @@
 import { z } from "zod";
 import {
-  allRealStatesSchema,
-  createRealStateSchema,
-  createRealStateSchemaReturn,
+  arrayRealEstatesSchema,
+  realEstateSchema,
+  returnRealEstateSchema,
 } from "../schemas/realState.schema";
 
-type IRealStateRequest = z.infer<typeof createRealStateSchema>;
-type IRealStateReturn = z.infer<typeof createRealStateSchemaReturn>;
-type IAllRealStateReturn = z.infer<typeof allRealStatesSchema>;
+type IRealStateRequest = z.infer<typeof realEstateSchema>;
+type IRealStateReturn = z.infer<typeof returnRealEstateSchema>;
+type IAllRealStateReturn = z.infer<typeof arrayRealEstatesSchema>;
 // type IUserUpdate = z.infer<typeof userUpdateSchema>;
 
 export { IRealStateRequest, IRealStateReturn, IAllRealStateReturn };

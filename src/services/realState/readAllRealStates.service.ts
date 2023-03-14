@@ -7,7 +7,11 @@ const readAllRealStateService = async (): Promise<IAllRealStateReturn> => {
   const RealEstateRepository: Repository<RealEstate> =
     AppDataSource.getRepository(RealEstate);
 
-  const findRealState: any = await RealEstateRepository.find();
+  const findRealState: any = await RealEstateRepository.find({
+    relations: {
+      address: true,
+    },
+  });
 
   return findRealState;
 };

@@ -13,15 +13,6 @@ import { createUserSchema } from "../schemas/users.schemas";
 
 const userRoutes: Router = Router();
 
-//TODO:
-//SO ADMIN PODE LER TODOS OS USERS
-//ADMIN PODE ALTERAR TODO MUNDO
-//NAOADMIN SO PODE ALTERAR ELE MESMO
-//SO ADMIN PODE DELETAR
-//NAO DELETAR USUARIO JA DELETADO
-//DEVE RETORNAR O DELETEDAT DO USER DELETADO
-//PATCH PERMITIR MANDAR MESMO EMAIL DESDE QUE SEJA DO MESMO USER
-
 userRoutes.post(
   "",
   ensureDataIsValidMiddleWare(createUserSchema),
@@ -31,10 +22,16 @@ userRoutes.post(
 userRoutes.get("", ensureTokenIsValidMiddleware, readAllUsersController);
 userRoutes.patch(
   "/:id",
+  ensureTokenIsValidMiddleware,
   ensureEmailIsUniqueMiddleware,
   ensureUserExistsMiddleWare,
   updateUserController
 );
-userRoutes.delete("/:id", ensureUserExistsMiddleWare, deleteUserController);
+userRoutes.delete(
+  "/:id",
+  ensureTokenIsValidMiddleware,
+  ensureUserExistsMiddleWare,
+  deleteUserController
+);
 
 export default userRoutes;

@@ -1,9 +1,14 @@
 import { AppDataSource } from "../../data-source";
 import { Category } from "../../entities";
 import { Repository } from "typeorm";
-import { createUserSchemaReturn } from "../../schemas/users.schemas";
+import {
+  ICategoryRequest,
+  ICategoryRequestReturn,
+} from "../../interfaces/categories.interfaces";
 
-const createCategoryService = async (userData: any): Promise<any> => {
+const createCategoryService = async (
+  userData: ICategoryRequest
+): Promise<ICategoryRequestReturn> => {
   const categoryRepository: Repository<Category> =
     AppDataSource.getRepository(Category);
 

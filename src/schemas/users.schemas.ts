@@ -2,25 +2,28 @@ import { hashSync } from "bcryptjs";
 import { z } from "zod";
 
 const createUserSchema = z.object({
-  name: z.string(),
-  email: z.string(),
-  admin: z.boolean().optional().nullable(),
-  password: z.string().transform((password) => {
-    return hashSync(password, 10);
-  }),
+  name: z.string().max(45),
+  email: z.string().email(),
+  admin: z.boolean().optional().default(false),
+  password: z.string(),
 });
 
 const createUserSchemaReturn = createUserSchema
   .extend({
     id: z.number(),
-    deteledAt: z.date().optional().nullable(),
-    createdAt: z.date(),
-    updatedAt: z.date(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+    deletedAt: z.string().nullable(),
   })
   .omit({ password: true });
 
 const allUsersSchema = z.array(createUserSchemaReturn);
-const userUpdateSchema = createUserSchema.partial();
+
+const userUpdateSchema = z.object({
+  name: z.string().max(45).optional(),
+  email: z.string().email().max(45).optional(),
+  password: z.string().optional(),
+});
 
 export {
   createUserSchema,

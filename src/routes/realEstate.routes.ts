@@ -3,14 +3,16 @@ import {
   createRealStateController,
   readAllRealStatesController,
 } from "../controllers/realState.controller";
+import ensureTokenIsValidMiddleware from "../middlewares/login/ensureTokenIsValid.middleware";
 import ensureDataIsValidMiddleWare from "../middlewares/user/ensureDataIsValid.middlewares";
-import { createRealStateSchema } from "../schemas/realState.schema";
+import { realEstateSchema } from "../schemas/realState.schema";
 
 const realStateRoutes: Router = Router();
 
 realStateRoutes.post(
   "",
-  ensureDataIsValidMiddleWare(createRealStateSchema),
+  ensureTokenIsValidMiddleware,
+  ensureDataIsValidMiddleWare(realEstateSchema),
   createRealStateController
 );
 
